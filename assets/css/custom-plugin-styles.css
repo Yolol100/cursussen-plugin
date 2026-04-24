@@ -1,0 +1,245 @@
+:root {
+    /* --- Kleuren --- */
+    --background-color: #ffffff;
+    --border-color: #e0e0e0;
+    --th-background-color: #1DABE2;
+    --th-text-color: #ffffff;
+    --td-text-color: #555555;
+    --no-available-spot-color: #ff4040;
+    --available-spot-color: #27ae60;
+    --button-disabled-color: #e0e0e0;
+
+    /* --- Grootte en afmetingen --- */
+    --border-radius: 10px;
+    --table-border-radius: 8px;
+    --padding: 20px;
+    --cell-padding: 14px 20px;
+    --select-height: 40px;
+    --select-padding: 5px 10px;
+
+    /* --- Schaduwen --- */
+    --box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    --table-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    --select-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+
+    /* --- Typografie --- */
+    --font-family: 'Poppins', sans-serif;
+    --th-font-size: 16px;
+    --td-font-size: 16px;
+
+    /* --- Overige --- */
+    --transition-speed: 0.3s;
+    --toggle-background-color: #1DABE2; /* Gesloten */
+    --toggle-hover-color: #F49C24;
+    --toggle-active-color: #1DABE2; /* Open */
+    --toggle-text-color: #ffffff;
+    --toggle-icon-color: #ffffff;
+}
+
+/* --- Tabel Stijlen --- */
+.table-cursussen {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-family: var(--font-family);
+    font-size: var(--td-font-size);
+    text-align: left;
+    background-color: var(--background-color);
+    border-radius: var(--table-border-radius);
+    overflow: hidden;
+    box-shadow: var(--table-box-shadow);
+}
+
+.table-cursussen th,
+.table-cursussen td {
+    padding: var(--cell-padding);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table-cursussen th {
+    background-color: var(--th-background-color);
+    color: var(--th-text-color);
+    font-size: var(--th-font-size);
+    font-weight: bold;
+    text-transform: none;
+}
+
+.table-cursussen td {
+    color: var(--td-text-color);
+}
+
+.table-cursussen tbody tr:nth-child(even) {
+    background-color: #f7f7f7;
+}
+
+.table-cursussen tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* --- Beschikbare Plekken Tekst Stijlen --- */
+.custom-green {
+    color: var(--available-spot-color);
+}
+
+.custom-no-plekken {
+    font-size: 12px;
+    font-style: italic;
+    color: var(--no-available-spot-color);
+}
+
+/* --- Verberg de 'Vol'-status op mobiele apparaten --- */
+@media screen and (max-width: 768px) {
+    .custom-red.disabled {
+        display: none;
+    }
+}
+
+/* --- Inschrijven Knop Stijlen --- */
+.custom-inschrijven-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5em 1.2em;
+    font-family: var(--font-family);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.2em;
+    background-color: var(--toggle-background-color); /* #1DABE2 */
+    color: var(--toggle-text-color) !important;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
+    margin: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.custom-inschrijven-btn:hover {
+    background-color: #F49C24; /* Hover kleur */
+    transform: translateY(-2px);
+}
+
+/* --- Vol Knop Stijlen --- */
+.custom-red.disabled {
+    background: none;
+    color: var(--no-available-spot-color);
+    font-weight: 500;
+    font-size: 1rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    box-shadow: none;
+}
+
+.custom-green.disabled {
+    background: none;
+    color: var(--no-available-spot-color);
+    font-weight: 500;
+    font-size: 1rem;
+    text-align: left;
+}
+
+/* --- Toggle Interface Stijlen --- */
+.cursussen-toggle-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.cursus-toggle-item {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    background-color: var(--toggle-background-color); /* #1DABE2 */
+    transition: background-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.cursus-toggle-button {
+    width: 100%;
+    background-color: var(--toggle-background-color); /* #1DABE2 */
+    border: none;
+    padding: 1rem;
+    text-align: left;
+    cursor: pointer;
+    font-size: var(--th-font-size);
+    position: relative;
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--toggle-text-color);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.cursus-toggle-button:hover {
+    background-color: var(--toggle-hover-color); /* #F49C24 */
+}
+
+.cursus-toggle-button.active {
+    background-color: var(--toggle-active-color); /* #F49C24 */
+    color: var(--toggle-text-color);
+}
+
+.cursus-toggle-button .toggle-icon {
+    position: absolute;
+    right: 1rem;
+    font-size: 18px;
+    color: var(--toggle-icon-color);
+    transition: transform var(--transition-speed), color var(--transition-speed);
+}
+
+/* --- Toggle Content Stijlen --- */
+.cursus-toggle-content {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding: 0 20px;
+    border-top: 1px solid var(--border-color);
+    background-color: #f7f7f7;
+    transition: max-height var(--transition-speed) ease-in-out, opacity var(--transition-speed) ease-in-out, padding var(--transition-speed) ease-in-out;
+}
+
+.cursus-toggle-item.active .cursus-toggle-content {
+    max-height: 500px; /* Zorg voor een voldoende hoge max-height */
+    opacity: 1;
+    padding: 15px 20px 5px 20px;
+}
+
+/* --- Startdatum Padding --- */
+.toggle-startdatum {
+    padding: 1rem;
+}
+
+/* --- Responsieve Aanpassingen --- */
+.desktop-view {
+    display: none;
+}
+
+.mobile-view {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@media (min-width: 769px) {
+    .desktop-view {
+        display: block;
+    }
+
+    .mobile-view {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .desktop-view {
+        display: none;
+    }
+
+    .mobile-view {
+        display: flex;
+    }
+}
