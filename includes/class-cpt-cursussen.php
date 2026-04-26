@@ -3,60 +3,72 @@ declare(strict_types=1);
 
 namespace SodriveAcademie;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 class CPT_Cursussen {
+    public const POST_TYPE = 'cursussen';
+    public const TAXONOMY  = 'cursus_categorie';
+
     public function __construct() {
-        // Registreer acties en hooks
-        add_action('init', [$this, 'register_custom_post_type']);
-        add_action('init', [$this, 'register_custom_taxonomies']);
-        add_filter('manage_cursussen_posts_columns', [$this, 'add_custom_columns']);
-        add_action('manage_cursussen_posts_custom_column', [$this, 'populate_custom_columns'], 10, 2);
+        add_action( 'init', [ $this, 'register_custom_post_type' ] );
+        add_action( 'init', [ $this, 'register_custom_taxonomies' ] );
+        add_filter( 'manage_cursussen_posts_columns', [ $this, 'add_custom_columns' ] );
+        add_action( 'manage_cursussen_posts_custom_column', [ $this, 'populate_custom_columns' ], 10, 2 );
     }
 
-    /**
-     * Registreert het custom post type "Cursussen".
-     */
     public function register_custom_post_type(): void {
         $labels = [
-            'name'               => __('Cursussen', 'cursussen-plugin'),
-            'singular_name'      => __('Cursus', 'cursussen-plugin'),
-            'menu_name'          => __('Cursussen', 'cursussen-plugin'),
-            'add_new'            => __('Nieuwe Cursus Toevoegen', 'cursussen-plugin'),
-            'add_new_item'       => __('Nieuwe Cursus Toevoegen', 'cursussen-plugin'),
-            'edit_item'          => __('Cursus Bewerken', 'cursussen-plugin'),
-            'new_item'           => __('Nieuwe Cursus', 'cursussen-plugin'),
-            'view_item'          => __('Cursus Bekijken', 'cursussen-plugin'),
-            'search_items'       => __('Cursussen Zoeken', 'cursussen-plugin'),
-            'not_found'          => __('Geen Cursussen gevonden', 'cursussen-plugin'),
-            'not_found_in_trash' => __('Geen Cursussen gevonden in de prullenbak', 'cursussen-plugin'),
+            'name'                  => esc_html__( 'Cursussen', 'cursussen-plugin' ),
+            'singular_name'         => esc_html__( 'Cursus', 'cursussen-plugin' ),
+            'menu_name'             => esc_html__( 'Cursussen', 'cursussen-plugin' ),
+            'name_admin_bar'        => esc_html__( 'Cursus', 'cursussen-plugin' ),
+            'add_new'               => esc_html__( 'Nieuwe cursus', 'cursussen-plugin' ),
+            'add_new_item'          => esc_html__( 'Nieuwe cursus toevoegen', 'cursussen-plugin' ),
+            'edit_item'             => esc_html__( 'Cursus bewerken', 'cursussen-plugin' ),
+            'new_item'              => esc_html__( 'Nieuwe cursus', 'cursussen-plugin' ),
+            'view_item'             => esc_html__( 'Cursus bekijken', 'cursussen-plugin' ),
+            'view_items'            => esc_html__( 'Cursussen bekijken', 'cursussen-plugin' ),
+            'search_items'          => esc_html__( 'Cursussen zoeken', 'cursussen-plugin' ),
+            'not_found'             => esc_html__( 'Geen cursussen gevonden', 'cursussen-plugin' ),
+            'not_found_in_trash'    => esc_html__( 'Geen cursussen gevonden in de prullenbak', 'cursussen-plugin' ),
+            'all_items'             => esc_html__( 'Alle cursussen', 'cursussen-plugin' ),
+            'archives'              => esc_html__( 'Cursusarchief', 'cursussen-plugin' ),
+            'attributes'            => esc_html__( 'Cursus eigenschappen', 'cursussen-plugin' ),
+            'insert_into_item'      => esc_html__( 'Invoegen in cursus', 'cursussen-plugin' ),
+            'uploaded_to_this_item' => esc_html__( 'Geüpload naar deze cursus', 'cursussen-plugin' ),
         ];
 
         $args = [
-            'labels'       => $labels,
-            'public'       => true,
-            'has_archive'  => true,
-            'rewrite'      => ['slug' => 'cursussen'],
-            'supports'     => ['title', 'editor', 'excerpt', 'thumbnail'],
-            'show_in_rest' => true,
-            'menu_icon'    => 'dashicons-welcome-learn-more',
+            'labels'             => $labels,
+            'public'             => true,
+            'publicly_queryable' => true,
+            'show_ui'            => true,
+            'show_in_menu'       => true,
+            'has_archive'        => true,
+            'rewrite'            => [ 'slug' => 'cursussen', 'with_front' => false ],
+            'supports'           => [ 'title', 'editor', 'excerpt', 'thumbnail' ],
+            'show_in_rest'       => true,
+            'menu_icon'          => 'dashicons-welcome-learn-more',
         ];
 
-        register_post_type('cursussen', $args);
+        register_post_type( self::POST_TYPE, $args );
     }
 
-    /**
-     * Registreert een aangepaste taxonomie voor "Cursussen".
-     */
     public function register_custom_taxonomies(): void {
         $labels = [
-            'name'              => __('Cursus Categorieën', 'cursussen-plugin'),
-            'singular_name'     => __('Cursus Categorie', 'cursussen-plugin'),
-            'search_items'      => __('Zoek Categorieën', 'cursussen-plugin'),
-            'all_items'         => __('Alle Categorieën', 'cursussen-plugin'),
-            'edit_item'         => __('Bewerk Categorie', 'cursussen-plugin'),
-            'update_item'       => __('Update Categorie', 'cursussen-plugin'),
-            'add_new_item'      => __('Voeg Nieuwe Categorie Toe', 'cursussen-plugin'),
-            'new_item_name'     => __('Nieuwe Categorie Naam', 'cursussen-plugin'),
-            'menu_name'         => __('Categorieën', 'cursussen-plugin'),
+            'name'              => esc_html__( 'Cursus categorieën', 'cursussen-plugin' ),
+            'singular_name'     => esc_html__( 'Cursus categorie', 'cursussen-plugin' ),
+            'search_items'      => esc_html__( 'Categorieën zoeken', 'cursussen-plugin' ),
+            'all_items'         => esc_html__( 'Alle categorieën', 'cursussen-plugin' ),
+            'parent_item'       => esc_html__( 'Hoofdcategorie', 'cursussen-plugin' ),
+            'parent_item_colon' => esc_html__( 'Hoofdcategorie:', 'cursussen-plugin' ),
+            'edit_item'         => esc_html__( 'Categorie bewerken', 'cursussen-plugin' ),
+            'update_item'       => esc_html__( 'Categorie bijwerken', 'cursussen-plugin' ),
+            'add_new_item'      => esc_html__( 'Nieuwe categorie toevoegen', 'cursussen-plugin' ),
+            'new_item_name'     => esc_html__( 'Nieuwe categorienaam', 'cursussen-plugin' ),
+            'menu_name'         => esc_html__( 'Categorieën', 'cursussen-plugin' ),
         ];
 
         $args = [
@@ -65,47 +77,35 @@ class CPT_Cursussen {
             'show_ui'           => true,
             'show_admin_column' => true,
             'query_var'         => true,
-            'rewrite'           => ['slug' => 'cursus-categorie'],
+            'show_in_rest'      => true,
+            'rewrite'           => [ 'slug' => 'cursus-categorie', 'with_front' => false ],
         ];
 
-        register_taxonomy('cursus_categorie', ['cursussen'], $args);
+        register_taxonomy( self::TAXONOMY, [ self::POST_TYPE ], $args );
     }
 
-    /**
-     * Voegt aangepaste kolommen toe aan de lijstweergave van Cursussen in de admin.
-     *
-     * @param array $columns De bestaande kolommen.
-     * @return array De aangepaste kolommen.
-     */
-    public function add_custom_columns(array $columns): array {
+    public function add_custom_columns( array $columns ): array {
         return [
             'cb'         => $columns['cb'] ?? '',
-            'title'      => __('Cursus', 'cursussen-plugin'),
-            'startdatum' => __('Startdatum', 'cursussen-plugin'),
-            'categorie'  => __('Categorie', 'cursussen-plugin'),
+            'title'      => esc_html__( 'Cursus', 'cursussen-plugin' ),
+            'startdatum' => esc_html__( 'Startdatum', 'cursussen-plugin' ),
+            'categorie'  => esc_html__( 'Categorie', 'cursussen-plugin' ),
             'date'       => $columns['date'] ?? '',
         ];
     }
 
-    /**
-     * Populeert de aangepaste kolommen met data.
-     *
-     * @param string $column  De kolomnaam.
-     * @param int    $post_id De ID van de huidige post.
-     */
-    public function populate_custom_columns(string $column, int $post_id): void {
-        switch ($column) {
+    public function populate_custom_columns( string $column, int $post_id ): void {
+        switch ( $column ) {
             case 'startdatum':
-                $startdatum = get_post_meta($post_id, 'startdatum', true);
-                echo esc_html($startdatum ?: __('Niet ingesteld', 'cursussen-plugin'));
+                $startdatum = (string) get_post_meta( $post_id, 'startdatum', true );
+                echo esc_html( $startdatum ?: esc_html__( 'Niet ingesteld', 'cursussen-plugin' ) );
                 break;
             case 'categorie':
-                $terms = get_the_terms($post_id, 'cursus_categorie');
-                if (!empty($terms) && !is_wp_error($terms)) {
-                    $term_names = wp_list_pluck($terms, 'name');
-                    echo esc_html(implode(', ', $term_names));
+                $terms = get_the_terms( $post_id, self::TAXONOMY );
+                if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+                    echo esc_html( implode( ', ', wp_list_pluck( $terms, 'name' ) ) );
                 } else {
-                    _e('Geen categorie', 'cursussen-plugin');
+                    echo esc_html__( 'Geen categorie', 'cursussen-plugin' );
                 }
                 break;
         }

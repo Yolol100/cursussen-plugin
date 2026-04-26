@@ -3,144 +3,171 @@ declare(strict_types=1);
 
 namespace SodriveAcademie;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 use WP_Post;
 
 class Meta_Boxes {
+    private const NONCE_ACTION = 'cursussen_custom_fields';
+    private const NONCE_NAME   = 'cursussen_custom_fields_nonce';
+
+    private const FIELDS = [
+        'startdatum'          => 'date',
+        'opleidingstype'      => 'opleidingstype',
+        'starttijd'           => 'time',
+        'eindtijd'            => 'time',
+        'bijeenkomsten'       => 'text',
+        'inschrijven'         => 'inschrijven',
+        'beschikbare_plekken' => 'int',
+    ];
+
     public function __construct() {
-        add_action('add_meta_boxes', [$this, 'add_custom_fields_metabox']);
-        add_action('save_post', [$this, 'save_custom_fields']);
+        add_action( 'add_meta_boxes', [ $this, 'add_custom_fields_metabox' ] );
+        add_action( 'save_post_' . CPT_Cursussen::POST_TYPE, [ $this, 'save_custom_fields' ], 10, 2 );
     }
 
-    /**
-     * Voeg een custom meta box toe aan de 'cursussen' post type.
-     */
     public function add_custom_fields_metabox(): void {
         add_meta_box(
             'cursussen_custom_fields',
-            __('Cursus Details', 'cursussen-plugin'),
-            [$this, 'custom_fields_callback'],
-            'cursussen',
+            esc_html__( 'Cursus details', 'cursussen-plugin' ),
+            [ $this, 'custom_fields_callback' ],
+            CPT_Cursussen::POST_TYPE,
             'normal',
             'high'
         );
     }
 
-    /**
-     * HTML output voor de custom fields in de meta box.
-     *
-     * @param WP_Post $post Het huidige post-object.
-     */
-    public function custom_fields_callback(WP_Post $post): void {
-        // Haal opgeslagen metadata op of gebruik standaardwaarden
-        $custom_fields = get_post_custom($post->ID);
-        $fields = [
-            'startdatum'         => '',
-            'opleidingstype'     => '',
-            'starttijd'          => '',
-            'eindtijd'           => '',
-            'bijeenkomsten'      => '',
-            'inschrijven'        => 'Inschrijven',
-            'beschikbare_plekken'=> 0,
-        ];
-
-        foreach ($fields as $field => $default) {
-            $fields[$field] = isset($custom_fields[$field])
-                ? sanitize_text_field($custom_fields[$field][0])
-                : $default;
-        }
-
-        // Voeg een nonce toe voor beveiliging
-        wp_nonce_field('cursussen_custom_fields', 'cursussen_custom_fields_nonce');
+    public function custom_fields_callback( WP_Post $post ): void {
+        $values = $this->get_field_values( $post->ID );
+        wp_nonce_field( self::NONCE_ACTION, self::NONCE_NAME );
         ?>
-        <div class="custom-cursussen-details">
-            <table class="form-table">
-                <?php foreach ($fields as $field => $value): ?>
-                    <tr id="<?php echo esc_attr($field); ?>_row" <?php echo ($field === 'beschikbare_plekken' && $fields['inschrijven'] === 'Vol') ? 'style="display:none;"' : ''; ?>>
-                        <th>
-                            <label for="<?php echo esc_attr($field); ?>">
-                                <?php echo esc_html(ucfirst(str_replace('_', ' ', $field))); ?>:
-                            </label>
-                        </th>
+        <div class="sda-cursussen-admin-details">
+            <table class="form-table" role="presentation">
+                <tbody>
+                    <tr>
+                        <th scope="row"><label for="startdatum"><?php echo esc_html__( 'Startdatum', 'cursussen-plugin' ); ?></label></th>
+                        <td><input type="date" class="regular-text" name="startdatum" id="startdatum" value="<?php echo esc_attr( $values['startdatum'] ); ?>"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="opleidingstype"><?php echo esc_html__( 'Opleidingstype', 'cursussen-plugin' ); ?></label></th>
                         <td>
-                            <?php if ($field === 'opleidingstype'): ?>
-                                <select name="<?php echo esc_attr($field); ?>" id="<?php echo esc_attr($field); ?>">
-                                    <option value="klassikaal" <?php selected($value, 'klassikaal'); ?>>
-                                        <?php _e('Klassikaal', 'cursussen-plugin'); ?>
-                                    </option>
-                                    <option value="online" <?php selected($value, 'online'); ?>>
-                                        <?php _e('Online', 'cursussen-plugin'); ?>
-                                    </option>
-                                </select>
-                            <?php elseif ($field === 'inschrijven'): ?>
-                                <select name="<?php echo esc_attr($field); ?>" id="<?php echo esc_attr($field); ?>" onchange="toggleBeschikbarePlekken(this.value)">
-                                    <option value="Inschrijven" <?php selected($value, 'Inschrijven'); ?>>
-                                        <?php _e('Inschrijven', 'cursussen-plugin'); ?>
-                                    </option>
-                                    <option value="Vol" <?php selected($value, 'Vol'); ?>>
-                                        <?php _e('Vol', 'cursussen-plugin'); ?>
-                                    </option>
-                                </select>
-                            <?php elseif ($field === 'beschikbare_plekken'): ?>
-                                <input type="number" name="<?php echo esc_attr($field); ?>" id="<?php echo esc_attr($field); ?>" value="<?php echo esc_attr($value); ?>" min="0">
-                            <?php elseif ($field === 'startdatum'): ?>
-                                <input type="date" name="<?php echo esc_attr($field); ?>" id="<?php echo esc_attr($field); ?>" value="<?php echo esc_attr($value); ?>">
-                            <?php else: ?>
-                                <input type="text" name="<?php echo esc_attr($field); ?>" id="<?php echo esc_attr($field); ?>" value="<?php echo esc_attr($value); ?>">
-                            <?php endif; ?>
+                            <select name="opleidingstype" id="opleidingstype">
+                                <option value="klassikaal" <?php selected( $values['opleidingstype'], 'klassikaal' ); ?>><?php echo esc_html__( 'Klassikaal', 'cursussen-plugin' ); ?></option>
+                                <option value="online" <?php selected( $values['opleidingstype'], 'online' ); ?>><?php echo esc_html__( 'Online', 'cursussen-plugin' ); ?></option>
+                            </select>
                         </td>
                     </tr>
-                <?php endforeach; ?>
+                    <tr>
+                        <th scope="row"><label for="starttijd"><?php echo esc_html__( 'Starttijd', 'cursussen-plugin' ); ?></label></th>
+                        <td><input type="time" class="regular-text" name="starttijd" id="starttijd" value="<?php echo esc_attr( $values['starttijd'] ); ?>"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="eindtijd"><?php echo esc_html__( 'Eindtijd', 'cursussen-plugin' ); ?></label></th>
+                        <td><input type="time" class="regular-text" name="eindtijd" id="eindtijd" value="<?php echo esc_attr( $values['eindtijd'] ); ?>"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="bijeenkomsten"><?php echo esc_html__( 'Bijeenkomsten', 'cursussen-plugin' ); ?></label></th>
+                        <td><input type="text" class="regular-text" name="bijeenkomsten" id="bijeenkomsten" value="<?php echo esc_attr( $values['bijeenkomsten'] ); ?>"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="inschrijven"><?php echo esc_html__( 'Inschrijfstatus', 'cursussen-plugin' ); ?></label></th>
+                        <td>
+                            <select name="inschrijven" id="inschrijven" data-cursussen-toggle-target="beschikbare_plekken_row">
+                                <option value="Inschrijven" <?php selected( $values['inschrijven'], 'Inschrijven' ); ?>><?php echo esc_html__( 'Inschrijven', 'cursussen-plugin' ); ?></option>
+                                <option value="Vol" <?php selected( $values['inschrijven'], 'Vol' ); ?>><?php echo esc_html__( 'Vol', 'cursussen-plugin' ); ?></option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="beschikbare_plekken_row" <?php echo 'Vol' === $values['inschrijven'] ? 'style="display:none;"' : ''; ?>>
+                        <th scope="row"><label for="beschikbare_plekken"><?php echo esc_html__( 'Beschikbare plekken', 'cursussen-plugin' ); ?></label></th>
+                        <td><input type="number" min="0" step="1" class="small-text" name="beschikbare_plekken" id="beschikbare_plekken" value="<?php echo esc_attr( (string) $values['beschikbare_plekken'] ); ?>"></td>
+                    </tr>
+                </tbody>
             </table>
         </div>
-        <script type="text/javascript">
-            const toggleBeschikbarePlekken = (value) => {
-                const beschikbaarPlekkenRow = document.getElementById('beschikbare_plekken_row');
-                beschikbaarPlekkenRow.style.display = (value === 'Vol') ? 'none' : 'table-row';
-            };
-            document.addEventListener('DOMContentLoaded', () => {
-                toggleBeschikbarePlekken(document.getElementById('inschrijven').value);
-            });
-        </script>
         <?php
     }
 
-    /**
-     * Validatie en opslag van custom fields.
-     *
-     * @param int $post_id Het ID van de huidige post.
-     */
-    public function save_custom_fields(int $post_id): void {
-        // Controleer op autosave
-        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+    public function save_custom_fields( int $post_id, WP_Post $post ): void {
+        if ( CPT_Cursussen::POST_TYPE !== $post->post_type ) {
             return;
         }
-        // Controleer of de gebruiker toestemming heeft om de post te bewerken
-        if (!current_user_can('edit_post', $post_id)) {
+
+        if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
             return;
         }
-        // Controleer de nonce
-        if (!isset($_POST['cursussen_custom_fields_nonce']) || !wp_verify_nonce($_POST['cursussen_custom_fields_nonce'], 'cursussen_custom_fields')) {
+
+        if ( ! current_user_can( 'edit_post', $post_id ) ) {
             return;
         }
-        // Definieer de velden die opgeslagen moeten worden
-        $fields = ['startdatum', 'opleidingstype', 'starttijd', 'eindtijd', 'bijeenkomsten', 'inschrijven', 'beschikbare_plekken'];
-        foreach ($fields as $field) {
-            if (isset($_POST[$field])) {
-                $sanitized_value = in_array($field, ['startdatum', 'starttijd', 'eindtijd'], true)
-                    ? sanitize_text_field($_POST[$field])
-                    : ($field === 'beschikbare_plekken'
-                        ? intval($_POST[$field])
-                        : sanitize_text_field($_POST[$field])
-                    );
-                update_post_meta($post_id, $field, $sanitized_value);
+
+        $nonce = isset( $_POST[ self::NONCE_NAME ] ) ? sanitize_text_field( wp_unslash( $_POST[ self::NONCE_NAME ] ) ) : '';
+        if ( ! $nonce || ! wp_verify_nonce( $nonce, self::NONCE_ACTION ) ) {
+            return;
+        }
+
+        foreach ( self::FIELDS as $field => $type ) {
+            $raw = isset( $_POST[ $field ] ) ? wp_unslash( $_POST[ $field ] ) : null;
+            $value = $this->sanitize_field( $type, $raw );
+            update_post_meta( $post_id, $field, $value );
+        }
+
+        if ( 'Vol' === (string) get_post_meta( $post_id, 'inschrijven', true ) ) {
+            update_post_meta( $post_id, 'beschikbare_plekken', 0 );
+        }
+    }
+
+    private function get_field_values( int $post_id ): array {
+        $defaults = [
+            'startdatum'          => '',
+            'opleidingstype'      => 'klassikaal',
+            'starttijd'           => '',
+            'eindtijd'            => '',
+            'bijeenkomsten'       => '',
+            'inschrijven'         => 'Inschrijven',
+            'beschikbare_plekken' => 0,
+        ];
+
+        foreach ( array_keys( $defaults ) as $field ) {
+            $stored = get_post_meta( $post_id, $field, true );
+            if ( '' !== $stored && null !== $stored ) {
+                $defaults[ $field ] = is_scalar( $stored ) ? $stored : '';
             }
         }
-        // Als 'inschrijven' op "Vol" staat, zet dan 'beschikbare_plekken' op 0
-        if (isset($_POST['inschrijven']) && $_POST['inschrijven'] === 'Vol') {
-            update_post_meta($post_id, 'beschikbare_plekken', 0);
+
+        $defaults['opleidingstype'] = $this->sanitize_field( 'opleidingstype', $defaults['opleidingstype'] );
+        $defaults['inschrijven'] = $this->sanitize_field( 'inschrijven', $defaults['inschrijven'] );
+        $defaults['beschikbare_plekken'] = absint( $defaults['beschikbare_plekken'] );
+        $defaults['startdatum'] = $this->sanitize_field( 'date', $defaults['startdatum'] );
+        $defaults['starttijd'] = $this->sanitize_field( 'time', $defaults['starttijd'] );
+        $defaults['eindtijd'] = $this->sanitize_field( 'time', $defaults['eindtijd'] );
+        $defaults['bijeenkomsten'] = sanitize_text_field( (string) $defaults['bijeenkomsten'] );
+
+        return $defaults;
+    }
+
+    private function sanitize_field( string $type, $raw ) {
+        $value = is_scalar( $raw ) ? (string) $raw : '';
+
+        switch ( $type ) {
+            case 'opleidingstype':
+                return in_array( $value, [ 'klassikaal', 'online' ], true ) ? $value : 'klassikaal';
+            case 'inschrijven':
+                return in_array( $value, [ 'Inschrijven', 'Vol' ], true ) ? $value : 'Inschrijven';
+            case 'int':
+                return absint( $value );
+            case 'date':
+                if ( ! preg_match( '/^(\d{4})-(\d{2})-(\d{2})$/', $value, $matches ) ) {
+                    return '';
+                }
+                return checkdate( (int) $matches[2], (int) $matches[3], (int) $matches[1] ) ? $value : '';
+            case 'time':
+                return preg_match( '/^(?:[01]\d|2[0-3]):[0-5]\d$/', $value ) ? $value : '';
+            case 'text':
+            default:
+                return sanitize_text_field( $value );
         }
     }
 }
-
-// Initialiseer de Meta_Boxes klasse
-new Meta_Boxes();

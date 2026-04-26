@@ -1,245 +1,164 @@
-:root {
-    /* --- Kleuren --- */
-    --background-color: #ffffff;
-    --border-color: #e0e0e0;
-    --th-background-color: #1DABE2;
-    --th-text-color: #ffffff;
-    --td-text-color: #555555;
-    --no-available-spot-color: #ff4040;
-    --available-spot-color: #27ae60;
-    --button-disabled-color: #e0e0e0;
-
-    /* --- Grootte en afmetingen --- */
-    --border-radius: 10px;
-    --table-border-radius: 8px;
-    --padding: 20px;
-    --cell-padding: 14px 20px;
-    --select-height: 40px;
-    --select-padding: 5px 10px;
-
-    /* --- Schaduwen --- */
-    --box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    --table-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    --select-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-
-    /* --- Typografie --- */
-    --font-family: 'Poppins', sans-serif;
-    --th-font-size: 16px;
-    --td-font-size: 16px;
-
-    /* --- Overige --- */
-    --transition-speed: 0.3s;
-    --toggle-background-color: #1DABE2; /* Gesloten */
-    --toggle-hover-color: #F49C24;
-    --toggle-active-color: #1DABE2; /* Open */
-    --toggle-text-color: #ffffff;
-    --toggle-icon-color: #ffffff;
+.sda-cursussen {
+    --sda-courses-background: #ffffff;
+    --sda-courses-border: #e0e0e0;
+    --sda-courses-heading-bg: #1dabe2;
+    --sda-courses-heading-text: #ffffff;
+    --sda-courses-body-text: #555555;
+    --sda-courses-danger: #d63638;
+    --sda-courses-success: #27ae60;
+    --sda-courses-accent: #f49c24;
+    --sda-courses-radius: 10px;
+    --sda-courses-cell-padding: 14px 20px;
+    --sda-courses-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    --sda-courses-font-family: inherit;
+    font-family: var(--sda-courses-font-family);
 }
 
-/* --- Tabel Stijlen --- */
-.table-cursussen {
+.sda-cursussen__table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    font-family: var(--font-family);
-    font-size: var(--td-font-size);
+    font-size: 16px;
     text-align: left;
-    background-color: var(--background-color);
-    border-radius: var(--table-border-radius);
+    background: var(--sda-courses-background);
+    border-radius: var(--sda-courses-radius);
     overflow: hidden;
-    box-shadow: var(--table-box-shadow);
+    box-shadow: var(--sda-courses-shadow);
 }
 
-.table-cursussen th,
-.table-cursussen td {
-    padding: var(--cell-padding);
-    border-bottom: 1px solid var(--border-color);
+.sda-cursussen__table th,
+.sda-cursussen__table td {
+    padding: var(--sda-courses-cell-padding);
+    border-bottom: 1px solid var(--sda-courses-border);
 }
 
-.table-cursussen th {
-    background-color: var(--th-background-color);
-    color: var(--th-text-color);
-    font-size: var(--th-font-size);
-    font-weight: bold;
-    text-transform: none;
+.sda-cursussen__table th {
+    background: var(--sda-courses-heading-bg);
+    color: var(--sda-courses-heading-text);
+    font-weight: 700;
 }
 
-.table-cursussen td {
-    color: var(--td-text-color);
+.sda-cursussen__table td {
+    color: var(--sda-courses-body-text);
 }
 
-.table-cursussen tbody tr:nth-child(even) {
-    background-color: #f7f7f7;
+.sda-cursussen__table tbody tr:nth-child(even) {
+    background: #f7f7f7;
 }
 
-.table-cursussen tbody tr:hover {
-    background-color: #f1f1f1;
+.sda-cursussen__table tbody tr:hover {
+    background: #f1f1f1;
 }
 
-/* --- Beschikbare Plekken Tekst Stijlen --- */
-.custom-green {
-    color: var(--available-spot-color);
-}
-
-.custom-no-plekken {
-    font-size: 12px;
-    font-style: italic;
-    color: var(--no-available-spot-color);
-}
-
-/* --- Verberg de 'Vol'-status op mobiele apparaten --- */
-@media screen and (max-width: 768px) {
-    .custom-red.disabled {
-        display: none;
-    }
-}
-
-/* --- Inschrijven Knop Stijlen --- */
-.custom-inschrijven-btn {
-    display: flex;
+.sda-cursussen__button {
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     padding: 0.5em 1.2em;
-    font-family: var(--font-family);
     font-size: 1rem;
-    font-weight: 500;
-    line-height: 1.2em;
-    background-color: var(--toggle-background-color); /* #1DABE2 */
-    color: var(--toggle-text-color) !important;
-    border: none;
+    font-weight: 600;
+    line-height: 1.2;
+    background: var(--sda-courses-heading-bg);
+    color: #ffffff !important;
+    border: 0;
     border-radius: 8px;
     text-decoration: none;
-    transition: background-color var(--transition-speed), transform var(--transition-speed);
-    margin: auto;
+    transition: background-color 0.2s ease, transform 0.2s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.custom-inschrijven-btn:hover {
-    background-color: #F49C24; /* Hover kleur */
-    transform: translateY(-2px);
+.sda-cursussen__button:hover,
+.sda-cursussen__button:focus-visible {
+    background: var(--sda-courses-accent);
+    transform: translateY(-1px);
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
 }
 
-/* --- Vol Knop Stijlen --- */
-.custom-red.disabled {
-    background: none;
-    color: var(--no-available-spot-color);
-    font-weight: 500;
-    font-size: 1rem;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    box-shadow: none;
+.sda-cursussen__status {
+    font-weight: 600;
 }
 
-.custom-green.disabled {
-    background: none;
-    color: var(--no-available-spot-color);
-    font-weight: 500;
-    font-size: 1rem;
-    text-align: left;
+.sda-cursussen__status--full {
+    color: var(--sda-courses-danger);
 }
 
-/* --- Toggle Interface Stijlen --- */
-.cursussen-toggle-container {
+.sda-cursussen__mobile {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-.cursus-toggle-item {
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
+.sda-cursussen__item {
+    border: 1px solid var(--sda-courses-border);
+    border-radius: var(--sda-courses-radius);
     overflow: hidden;
-    background-color: var(--toggle-background-color); /* #1DABE2 */
-    transition: background-color var(--transition-speed), box-shadow var(--transition-speed);
+    background: var(--sda-courses-background);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
-.cursus-toggle-button {
+.sda-cursussen__toggle {
     width: 100%;
-    background-color: var(--toggle-background-color); /* #1DABE2 */
-    border: none;
+    border: 0;
     padding: 1rem;
     text-align: left;
     cursor: pointer;
-    font-size: var(--th-font-size);
-    position: relative;
-    transition: background-color var(--transition-speed), color var(--transition-speed);
+    font-size: 16px;
+    font-weight: 700;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: var(--toggle-text-color);
-    border-bottom: 2px solid var(--border-color);
+    gap: 1rem;
+    background: var(--sda-courses-heading-bg);
+    color: var(--sda-courses-heading-text);
 }
 
-.cursus-toggle-button:hover {
-    background-color: var(--toggle-hover-color); /* #F49C24 */
+.sda-cursussen__toggle:hover,
+.sda-cursussen__toggle:focus-visible {
+    background: var(--sda-courses-accent);
+    outline: 2px solid currentColor;
+    outline-offset: -4px;
 }
 
-.cursus-toggle-button.active {
-    background-color: var(--toggle-active-color); /* #F49C24 */
-    color: var(--toggle-text-color);
+.sda-cursussen__toggle-icon {
+    flex: 0 0 auto;
+    font-size: 20px;
+    line-height: 1;
 }
 
-.cursus-toggle-button .toggle-icon {
-    position: absolute;
-    right: 1rem;
-    font-size: 18px;
-    color: var(--toggle-icon-color);
-    transition: transform var(--transition-speed), color var(--transition-speed);
+.sda-cursussen__panel {
+    padding: 15px 20px 5px;
+    border-top: 1px solid var(--sda-courses-border);
+    background: #f7f7f7;
 }
 
-/* --- Toggle Content Stijlen --- */
-.cursus-toggle-content {
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    padding: 0 20px;
-    border-top: 1px solid var(--border-color);
-    background-color: #f7f7f7;
-    transition: max-height var(--transition-speed) ease-in-out, opacity var(--transition-speed) ease-in-out, padding var(--transition-speed) ease-in-out;
-}
-
-.cursus-toggle-item.active .cursus-toggle-content {
-    max-height: 500px; /* Zorg voor een voldoende hoge max-height */
-    opacity: 1;
-    padding: 15px 20px 5px 20px;
-}
-
-/* --- Startdatum Padding --- */
-.toggle-startdatum {
-    padding: 1rem;
-}
-
-/* --- Responsieve Aanpassingen --- */
-.desktop-view {
+.sda-cursussen__panel[hidden] {
     display: none;
 }
 
-.mobile-view {
+.sda-cursussen__desktop,
+.sda-cursussen__mobile {
+    display: none;
+}
+
+.sda-cursussen--desktop .sda-cursussen__desktop {
+    display: block;
+}
+
+.sda-cursussen--mobile .sda-cursussen__mobile {
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+}
+
+.sda-cursussen--responsive .sda-cursussen__mobile {
+    display: flex;
 }
 
 @media (min-width: 769px) {
-    .desktop-view {
+    .sda-cursussen--responsive .sda-cursussen__desktop {
         display: block;
     }
 
-    .mobile-view {
+    .sda-cursussen--responsive .sda-cursussen__mobile {
         display: none;
-    }
-}
-
-@media (max-width: 768px) {
-    .desktop-view {
-        display: none;
-    }
-
-    .mobile-view {
-        display: flex;
     }
 }

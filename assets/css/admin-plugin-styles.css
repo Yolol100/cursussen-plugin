@@ -1,0 +1,11 @@
+.sda-cursussen-admin-details .form-table th {
+    width: 220px;
+}
+
+.sda-cursussen-admin-details input[type="text"],
+.sda-cursussen-admin-details input[type="date"],
+.sda-cursussen-admin-details input[type="time"],
+.sda-cursussen-admin-details select {
+    max-width: 320px;
+    width: 100%;
+}
