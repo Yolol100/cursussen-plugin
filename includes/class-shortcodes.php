@@ -29,7 +29,13 @@ class Shortcodes {
         );
 
         $layout = $this->normalize_layout( (string) $atts['layout'] );
-        $limit  = max( 1, min( 100, (int) $atts['aantal'] ) );
+        $limit  = (int) $atts['aantal'];
+
+        if ( 0 === $limit ) {
+            $limit = 50;
+        }
+
+        $limit = max( 1, min( 100, $limit ) );
 
         $args = [
             'post_type'              => CPT_Cursussen::POST_TYPE,
