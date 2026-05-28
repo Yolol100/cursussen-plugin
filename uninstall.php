@@ -13,10 +13,16 @@ if ( ! $delete_data ) {
     return;
 }
 
+require_once __DIR__ . '/includes/class-cpt-cursussen.php';
+
+$cpt = new \SodriveAcademie\CPT_Cursussen();
+$cpt->register_custom_post_type();
+$cpt->register_custom_taxonomies();
+
 while ( true ) {
     $post_ids = get_posts(
         [
-            'post_type'              => 'cursussen',
+            'post_type'              => \SodriveAcademie\CPT_Cursussen::POST_TYPE,
             'post_status'            => 'any',
             'posts_per_page'         => 100,
             'fields'                 => 'ids',
@@ -37,7 +43,7 @@ while ( true ) {
 
 $terms = get_terms(
     [
-        'taxonomy'   => 'cursus_categorie',
+        'taxonomy'   => \SodriveAcademie\CPT_Cursussen::TAXONOMY,
         'hide_empty' => false,
         'fields'     => 'ids',
     ]
@@ -45,7 +51,7 @@ $terms = get_terms(
 
 if ( ! is_wp_error( $terms ) ) {
     foreach ( $terms as $term_id ) {
-        wp_delete_term( (int) $term_id, 'cursus_categorie' );
+        wp_delete_term( (int) $term_id, \SodriveAcademie\CPT_Cursussen::TAXONOMY );
     }
 }
 
