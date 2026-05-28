@@ -4,7 +4,7 @@ Tags: courses, cursus, shortcode, custom post type
 Requires at least: 6.3
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.4.1
+Stable tag: 1.4.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,8 +28,9 @@ Cursussen registreert een custom post type voor cursusinformatie met velden voor
 Optionele attributen:
 
 * `categorie` - filter op categorie-slug.
-* `aantal` - maximaal aantal cursussen, standaard 50, maximaal 100 tenzij `-1` expliciet wordt gebruikt.
+* `aantal` - maximaal aantal cursussen, standaard 50, maximaal 100.
 * `inschrijven_url` - URL van de inschrijfpagina, standaard `/inschrijven/`.
+* `layout` - weergavevariant: `responsive`, `desktop` of `mobile`.
 
 Voorbeeld:
 
@@ -42,7 +43,7 @@ Publieke endpoints:
 * `/wp-json/cursussen/v1/all?page=1&per_page=20`
 * `/wp-json/cursussen/v1/filter?categorie=bhv&page=1&per_page=20`
 
-De endpoints geven alleen gepubliceerde cursusdata terug.
+De endpoints geven alleen gepubliceerde cursusdata terug. Gebruik deze endpoints alleen wanneer gepubliceerde cursusdata publiek beschikbaar mag zijn.
 
 == Frequently Asked Questions ==
 
@@ -52,8 +53,11 @@ Standaard niet. Data wordt alleen verwijderd wanneer de optie `cursussen_plugin_
 
 == Changelog ==
 
-= 1.4.1 =
-* Extra release QA hardening for settings fallback, REST sanitization, and uninstall batching.
+= 1.4.2 =
+* Capped shortcode query output at 100 items for safer frontend performance.
+* Removed the frontend jQuery dependency and rewrote the accordion script in vanilla JavaScript.
+* Registered plugin data types before uninstall cleanup for more reliable post and term removal.
+* Cleaned up readme release metadata and shortcode documentation.
 
 = 1.4.1 =
 * Security hardening for meta saving.
