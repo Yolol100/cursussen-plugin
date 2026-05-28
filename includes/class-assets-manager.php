@@ -36,7 +36,7 @@ class Assets_Manager {
         wp_register_script(
             'cursussen-plugin-frontend-scripts',
             CURSUSSEN_PLUGIN_URL . 'assets/js/custom-plugin-scripts.js',
-            [ 'jquery' ],
+            [],
             $this->asset_version( 'assets/js/custom-plugin-scripts.js' ),
             true
         );
