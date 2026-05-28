@@ -1,21 +1,43 @@
-(function ($) {
+(function () {
     'use strict';
 
-    $(function () {
-        $('[data-sda-cursussen]').each(function () {
-            var $wrapper = $(this);
+    function getPanel(button) {
+        var panelId = button.getAttribute('aria-controls');
+        if (panelId) {
+            return document.getElementById(panelId);
+        }
 
-            $wrapper.on('click', '.sda-cursussen__toggle', function () {
-                var $button = $(this);
-                var panelId = $button.attr('aria-controls');
-                var $panel = panelId ? $('#' + panelId) : $button.closest('.sda-cursussen__item').find('.sda-cursussen__panel').first();
-                var isOpen = $button.attr('aria-expanded') === 'true';
+        var item = button.closest('.sda-cursussen__item');
+        return item ? item.querySelector('.sda-cursussen__panel') : null;
+    }
 
-                $button.attr('aria-expanded', isOpen ? 'false' : 'true');
-                $button.find('.sda-cursussen__toggle-icon').text(isOpen ? '+' : '−');
-                $panel.prop('hidden', isOpen);
-                $button.closest('.sda-cursussen__item').toggleClass('is-open', !isOpen);
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('[data-sda-cursussen]').forEach(function (wrapper) {
+            wrapper.addEventListener('click', function (event) {
+                var button = event.target.closest('.sda-cursussen__toggle');
+                if (!button || !wrapper.contains(button)) {
+                    return;
+                }
+
+                var panel = getPanel(button);
+                var item = button.closest('.sda-cursussen__item');
+                var icon = button.querySelector('.sda-cursussen__toggle-icon');
+                var isOpen = button.getAttribute('aria-expanded') === 'true';
+
+                button.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+
+                if (icon) {
+                    icon.textContent = isOpen ? '+' : '−';
+                }
+
+                if (panel) {
+                    panel.hidden = isOpen;
+                }
+
+                if (item) {
+                    item.classList.toggle('is-open', !isOpen);
+                }
             });
         });
     });
-})(jQuery);
+})();
