@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Cursussen
  * Description: Beheer en toon cursusinformatie met een custom post type, shortcode en publieke REST API.
- * Version: 1.4.1
+ * Version: 1.4.2
  * Author: Sodriveacademie
  * Text Domain: cursussen-plugin
  * Domain Path: /languages
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'CURSUSSEN_PLUGIN_VERSION', '1.4.1' );
+define( 'CURSUSSEN_PLUGIN_VERSION', '1.4.2' );
 define( 'CURSUSSEN_PLUGIN_FILE', __FILE__ );
 define( 'CURSUSSEN_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CURSUSSEN_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
