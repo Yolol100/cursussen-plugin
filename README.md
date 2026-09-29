@@ -4,7 +4,7 @@
 
 Cursussen is a WordPress plugin for managing course information and publishing it through a responsive shortcode or public REST API. It demonstrates a focused content model, safe public data exposure and maintainable WordPress functionality without unnecessary dependencies.
 
-**Built by:** [Andrew Baeten](https://github.com/Yolol100) · [Portfolio](https://andrewbaeten.nl)
+**Built by:** [Andrew Baeten](https://github.com/Yolol100) · [Portfolio cases](https://andrewbaeten.nl/category/cases)
 
 ## What it demonstrates
 
