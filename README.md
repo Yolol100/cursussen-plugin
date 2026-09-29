@@ -1,6 +1,6 @@
 # Cursussen — WordPress Course Management Plugin
 
-> **WordPress/PHP · custom post types · REST API · shortcodes · responsive UI**
+> **Supporting portfolio project · WordPress/PHP · custom post types · REST API · shortcodes · responsive UI**
 
 Cursussen is a WordPress plugin for managing course information and publishing it through a responsive shortcode or public REST API. It demonstrates a focused content model, safe public data exposure and maintainable WordPress functionality without unnecessary dependencies.
 
