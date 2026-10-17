@@ -2,7 +2,7 @@
 
 > **Supporting portfolio project · WordPress/PHP · custom post types · REST API · shortcodes · responsive UI**
 
-**Developer profile:** [Andrew Baeten](https://github.com/Yolol100) · [Portfolio cases](https://andrewbaeten.nl/category/cases)
+**Developer profile:** [Andrew Baeten](https://github.com/Yolol100) · [GitHub project index](https://github.com/Yolol100?tab=repositories)
 
 Cursussen is a focused WordPress plugin for managing structured course information and publishing it through a responsive shortcode or a paginated public REST API. It keeps the content model, frontend output and lifecycle behaviour inside a small dependency-light plugin.
 
