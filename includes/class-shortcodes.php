@@ -80,6 +80,8 @@ class Shortcodes {
             $signup_url = esc_url( home_url( '/inschrijven/' ) );
         }
 
+        static $instance = 0;
+        ++$instance;
         $wrapper_classes = 'sda-cursussen sda-cursussen--' . $layout;
 
         ob_start();
@@ -89,7 +91,7 @@ class Shortcodes {
                 <?php $this->render_desktop_table( $courses, $signup_url ); ?>
             <?php endif; ?>
             <?php if ( 'desktop' !== $layout ) : ?>
-                <?php $this->render_mobile_accordion( $courses, $signup_url ); ?>
+                <?php $this->render_mobile_accordion( $courses, $signup_url, $instance ); ?>
             <?php endif; ?>
         </div>
         <?php
@@ -160,12 +162,13 @@ class Shortcodes {
         <?php
     }
 
-    private function render_mobile_accordion( array $courses, string $signup_url ): void {
+    private function render_mobile_accordion( array $courses, string $signup_url, int $instance ): void {
         ?>
         <div class="sda-cursussen__mobile" data-sda-cursussen-accordion>
             <?php foreach ( $courses as $index => $course ) :
-                $panel_id  = 'sda-cursus-panel-' . absint( $course['id'] ) . '-' . absint( $index );
-                $button_id = 'sda-cursus-button-' . absint( $course['id'] ) . '-' . absint( $index );
+                $instance_suffix = $instance > 1 ? '-' . $instance : '';
+                $panel_id  = 'sda-cursus-panel-' . absint( $course['id'] ) . '-' . absint( $index ) . $instance_suffix;
+                $button_id = 'sda-cursus-button-' . absint( $course['id'] ) . '-' . absint( $index ) . $instance_suffix;
                 ?>
                 <div class="sda-cursussen__item is-open">
                     <button class="sda-cursussen__toggle" type="button" id="<?php echo esc_attr( $button_id ); ?>" aria-expanded="true" aria-controls="<?php echo esc_attr( $panel_id ); ?>">
